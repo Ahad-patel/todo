@@ -1,0 +1,48 @@
+name: todo_timer
+version: 1.0.0+1
+publish_to: none
+description: A new Flutter project.
+environment: 
+  sdk: '>=2.18.4 <3.0.0'
+
+dependencies: 
+  cupertino_icons: ^1.0.5
+  get: 4.6.5
+  path_provider: ^2.0.11
+  responsive_sizer: ^3.1.1
+  circular_countdown_timer: ^0.2.3
+  flutter_neumorphic: ^3.2.0
+  sqflite: ^2.2.0+3
+  json_serializable: ^6.5.4
+  json_annotation: ^4.7.0
+  flutter:
+    sdk: flutter
+
+dev_dependencies: 
+  flutter_lints: ^2.0.0
+  build_runner: ^2.3.2
+#  flutter pub run build_runner build
+#  flutter pub run build_runner build --delete-conflicting-outputs
+  flutter_launcher_icons: ^0.11.0
+#  flutter pub run flutter_launcher_icons
+  flutter_test:
+    sdk: flutter
+
+flutter: 
+  uses-material-design: true
+  assets:
+    - assets/logo.png
+
+
+flutter_icons:
+  android: "launcher_icon"
+  ios: true
+  image_path: "assets/logo.png"
+  min_sdk_android: 21 # android min sdk min:16, default 21
+  remove_alpha_ios: true
+  web:
+    generate: false
+  windows:
+    generate: false
+  macos:
+    generate: false
