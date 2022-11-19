@@ -21,6 +21,7 @@ class DBProvider {
   static const String columnId = 'id';
   static const String columnTitle = 'title';
   static const String columnSubtitle = 'subtitle';
+  static const String columnStatus = 'status';
   static const String columnTime = 'time';
 
 
@@ -51,7 +52,7 @@ class DBProvider {
     String path = join(documentsDirectory.path, "api.db");
     return await openDatabase(
         path,
-        version: 1,
+        version: 2,
 
         onOpen: (db) {},
         onCreate: (Database db, int version) async {
@@ -61,21 +62,30 @@ class DBProvider {
                   "$columnId INTEGER PRIMARY KEY,"
                   "$columnTitle TEXT,"
                   "$columnSubtitle TEXT,"
+                  "$columnStatus TEXT,"
                   "$columnTime INTEGER" ")"
           );
 
           },
 
 
-      //   /// on upgrading database table
-      // onUpgrade: (Database db, int oldVersion, int newVersion) async {
-      //
-      //     if(oldVersion < newVersion) {
-      //
-      //       await db.execute("DROP TABLE IF EXISTS $tableNotes");
-      //
-      //     } //if condition
-      //  },
+        /// on upgrading database table
+      onUpgrade: (Database db, int oldVersion, int newVersion) async {
+
+          if(oldVersion < newVersion) {
+
+            await db.execute("DROP TABLE IF EXISTS $tableNotes");
+            await db.execute(
+                "CREATE TABLE $tableNotes ("
+                    "$columnId INTEGER PRIMARY KEY,"
+                    "$columnTitle TEXT,"
+                    "$columnSubtitle TEXT,"
+                    "$columnStatus TEXT,"
+                    "$columnTime INTEGER" ")"
+            );
+
+          } //if condition
+       },
 
       // onDowngrade: (Database db, int oldVersion, int newVersion) async {
       //   if(true) {
@@ -93,14 +103,14 @@ class DBProvider {
     final db = await database;
       try{
         var raw = await db.rawInsert(
-            "INSERT Into $tableNotes ($columnId,$columnTitle,$columnSubtitle,$columnTime)"
+            "INSERT Into $tableNotes ($columnTitle,$columnSubtitle,$columnStatus,$columnTime)"
                 " VALUES (?,?,?,?)",
-            [response.id,response.title,response.subtitle,response.time]);
+            [response.title,response.subtitle,response.status,response.time]);
         return raw;
       }catch(e){
         var raw = await db.rawUpdate(
-            'UPDATE $tableNotes SET $columnTitle = ? $columnSubtitle = ? $columnTime = ?  WHERE $columnId = ?',
-            [response.title,response.subtitle,response.time, response.id]);
+            'UPDATE $tableNotes SET $columnTitle = ? $columnSubtitle = ? $columnStatus = ? $columnTime = ?  WHERE $columnId = ?',
+            [response.title,response.subtitle,response.time, response.status,response.id]);
         return raw;
 
       }
@@ -114,8 +124,8 @@ class DBProvider {
     final db = await database;
     try{
       var raw = await db.rawUpdate(
-          'UPDATE $tableNotes SET $columnTitle = ? $columnSubtitle = ? $columnTime = ?  WHERE $columnId = ?',
-          [response.title,response.subtitle,response.time, response.id]);
+          'UPDATE $tableNotes SET $columnTitle = ? $columnSubtitle = ? $columnStatus = ? $columnTime = ?  WHERE $columnId = ?',
+          [response.title,response.subtitle,response.time,response.status, response.id]);
       return raw;
 
     }catch(e){
@@ -169,7 +179,7 @@ closedb() async {
 }
 opendb() async {
   Directory documentsDirectory = await getApplicationDocumentsDirectory();
-  String path = join(documentsDirectory.path, "api.db");
+  String path = join(documentsDirectory.path, "todo.db");
   await openDatabase(
     path ,
     version: 1,

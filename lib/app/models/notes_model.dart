@@ -7,9 +7,10 @@ class Notes {
   int? id;
   String? title;
   String? subtitle;
-  String? time;
+  String? status;
+  int? time;
 
-  Notes({this.id,this.title,this.subtitle,this.time});
+  Notes({this.id,this.title,this.subtitle,this.status,this.time});
 
   factory Notes.fromJson(Map<String, dynamic> json) => _$NotesFromJson(json);
 

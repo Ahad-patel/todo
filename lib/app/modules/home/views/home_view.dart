@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_neumorphic/flutter_neumorphic.dart';
-
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
-
+import 'package:todo_timer/app/modules/home/views/add_todo.dart';
+import 'package:todo_timer/app/routes/app_pages.dart';
+import '../../../utils/widgets.dart';
 import '../controllers/home_controller.dart';
-import 'btn_design.dart';
 
 class HomeView extends GetView<HomeController> {
   const HomeView({Key? key}) : super(key: key);
@@ -16,107 +18,132 @@ class HomeView extends GetView<HomeController> {
       appBar: AppBar(
         elevation:0,
         backgroundColor: Colors.transparent,
-        title:  Text('Todo',style: Get.textTheme.headline6!.copyWith(color: Get.theme.primaryColor),),
+        title:  Text('Todo',style: Get.textTheme.headline2!.copyWith(color: Get.theme.primaryColor),),
+        // title:  NeumorphicText('Todo',style: NeumorphicStyle(color: Get.theme.primaryColor,/*border: NeumorphicBorder(color: Colors.white )*/),textStyle: NeumorphicTextStyle(fontSize: 30.sp,),),
       ),
-      // floatingActionButton: const Design(
-      //   height1: 55,
-      //   width1: 55,
-      //   color: Color(0xFFe6ebf2),
-      //   offsetB: Offset(-2, -2),
-      //   offsetW: Offset(2, 2),
-      //   bLevel: 3.0,
-      //   iconData: Icons.add,
-      //   iconSize: 30.0,
-      // ),
       floatingActionButton: NeumorphicFloatingActionButton(
-        // Icons.add_circle,size: 80,
-        onPressed: () {},
-        // style: NeumorphicStyle(shape: NeumorphicShape.convex),
+        onPressed: () {
+          Get.bottomSheet(
+              AddTodo(),
+            backgroundColor: NeumorphicColors.background,
+              // backgroundColor: Colors.white,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
+            isScrollControlled: true
+          );
+        },
         child: Icon(Icons.add,size: 30,color: Get.theme.primaryColor,),
       ),
-      // floatingActionButton: NeumorphicFloatingActionButton(
-      //   onPressed: () {},
-      //   style: NeumorphicStyle(shape: NeumorphicShape.convex),
-      //   child: Icon(Icons.add,size: 30,color: Get.theme.primaryColor,),
-      // ),
       body: Padding(
         padding:  EdgeInsets.symmetric(vertical :3.h, horizontal: 2.w),
-        child:  ListView.builder(
-            shrinkWrap: true,
-            itemCount: 3,
-            itemBuilder: (context,index) {
+        child:  Obx(
+                () {
+            return ListView.builder(
+                shrinkWrap: true,
+                itemCount: controller.notesList.length,
+                itemBuilder: (context,index) {
+                  Duration duration = Duration(milliseconds: controller.notesList[index].time!);
+                  String status = controller.notesList[index].status!;
+                  // int val = index;
+                  Color? color;
+                  // String? status;
 
-              int val = index;
-              Color? color;
-              String? status;
-              switch(val) {
-               case 0 :
-                 status = "TODO";
-                 color = Get.theme.primaryColor;
-                 break;
-               case 1 :
-                 status = "IN-PROGRESS,";
-                 color = Get.theme.colorScheme.secondary;
-                 break;
-               case 2 :
-                 status = "DONE";
-                 color = Get.theme.colorScheme.tertiary;
-                 break;
-              }
 
-              return Stack(
-                children: [
-                  Padding(
-                    padding:  EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
-                    child: Neumorphic(
-                        child: Container(
-                          padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 3.w  ),
-                          decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(15)
-                          ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                  switch(status) {
+                   case 'TODO' :
+                     color = Get.theme.primaryColor;
+                     break;
+                   case "IN-PROGRESS" :
+                     color = Get.theme.colorScheme.secondary;
+                     break;
+                   case "DONE" :
+                     color = Get.theme.colorScheme.tertiary;
+                     break;
+                  }
 
-                            children: [
+                  return Stack(
+                    children: [
+                      Padding(
+                        padding:  EdgeInsets.symmetric(vertical: 2.h,horizontal: 4.w),
+                        child: GestureDetector(
+                          onTap: () {
 
-                              Expanded(
-                                child: Column(
+                            Get.toNamed(Routes.DETAILS);
+                          },
+                          child: Neumorphic(
+                              child: Container(
+                                padding: EdgeInsets.symmetric(vertical: 3.h, horizontal: 3.w  ),
+                                decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(15)
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   crossAxisAlignment: CrossAxisAlignment.start,
+
                                   children: [
-                                    Text('Title',style: Get.textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),),
-                                    Text('SubTitle',style: Get.textTheme.bodyText2!,maxLines: 1,overflow: TextOverflow.ellipsis,),
+
+
+                                    Neumorphic(
+                                        padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
+                                        style: NeumorphicStyle(
+                                          depth: NeumorphicTheme.embossDepth(context),
+                                          boxShape:  NeumorphicBoxShape.roundRect(BorderRadius.circular(10)),
+                                        ),
+                                        child: Text(Duration(milliseconds: controller.notesList[index].time!).toString().substring(2,6),style: Get.textTheme.subtitle2!.copyWith(color: color),)),
+
+                                    Gap(5.w),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('${controller.notesList[index].title}',style: Get.textTheme.bodyText2!.copyWith(fontWeight: FontWeight.bold),),
+                                          Text('${controller.notesList[index].subtitle}',style: Get.textTheme.bodyText2!,maxLines: 1,overflow: TextOverflow.ellipsis,),
+                                        ],
+                                      ),
+                                    ),
+                                    Chip(label: Text('$status',style: Get.textTheme.bodyText2!.copyWith(color: Colors.white),),backgroundColor: color,)
+
+
                                   ],
                                 ),
-                              ),
-                              Chip(label: Text('$status',style: Get.textTheme.bodyText2!.copyWith(color: Colors.white),),backgroundColor: color,)
-
-
-                            ],
+                              )
                           ),
-                        )
-                    ),
-                  ),
-                  Positioned(
-                    right: 0,
-                    top: 5,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        NeumorphicButton(
-                          onPressed: () {},
-                          style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle() ),
-                          child: Icon(Icons.close,color: Get.theme.errorColor,size: 15,),
-
                         ),
-                      ],
-                    ),
-                  )
-                ],
-              );
-            }
+                      ),
+                      Positioned(
+                        right: 0,
+                        top: 5,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            NeumorphicButton(
+                              onPressed: () {
+                                deleteDialog().then((value) {
+                                  if(value!= null && value) {
+                                    controller.deleteNote(controller.notesList[index].id!).then((value) {
+                                       controller.getAllNotes();                                    });
+                                  }
+                                });
+                              },
+                              style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle() ),
+                              child: Icon(Icons.close,color: Get.theme.errorColor,size: 15,),
+
+                            ),
+                          ],
+                        ),
+                      )
+                    ],
+                  );
+                }
+            );
+          }
         ),
       ),
     );
   }
 }
+//
+// enum Status {
+//   TODO,
+//   INPROGRESS,
+//   DONE
+// }
