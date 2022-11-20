@@ -133,6 +133,19 @@ class DBProvider {
     }
   }
 
+  updateStatus(String status,int id) async {
+    final db = await database;
+    try{
+      var raw = await db.rawUpdate(
+          'UPDATE $tableNotes SET $columnStatus = ? WHERE $columnId = ?',
+          [status,id]);
+      return raw;
+
+    }catch(e){
+      // showMyDialog("$e");
+    }
+  }
+
 
 
   /* fetch data from db */

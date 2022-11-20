@@ -114,3 +114,16 @@ Future<bool?> deleteDialog() {
   ).then((value) => value);
 
 }
+
+String twoDigits(int n) => n.toString().padLeft(2,'0');
+
+neumorphicDepthContainer(context,int? time,{TextStyle? style}) {
+  return Neumorphic(
+    padding: EdgeInsets.symmetric(horizontal: 3.w, vertical: 3.h),
+    style: NeumorphicStyle(
+      depth: NeumorphicTheme.embossDepth(context),
+      boxShape:  NeumorphicBoxShape.roundRect(BorderRadius.circular(10)),
+    ),
+    child: Text(Duration(milliseconds: time!).toString().substring(2,7),style: style ?? Get.textTheme.subtitle2!.copyWith(color: Get.theme.primaryColor),),
+  );
+}

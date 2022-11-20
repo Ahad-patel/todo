@@ -26,7 +26,6 @@ class HomeView extends GetView<HomeController> {
           Get.bottomSheet(
               AddTodo(),
             backgroundColor: NeumorphicColors.background,
-              // backgroundColor: Colors.white,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(15))),
             isScrollControlled: true
           );
@@ -67,7 +66,9 @@ class HomeView extends GetView<HomeController> {
                         child: GestureDetector(
                           onTap: () {
 
-                            Get.toNamed(Routes.DETAILS);
+                            Get.toNamed(Routes.DETAILS,arguments: controller.notesList[index])!.then((value) {
+                                    controller.getAllNotes();
+                            });
                           },
                           child: Neumorphic(
                               child: Container(
@@ -88,7 +89,7 @@ class HomeView extends GetView<HomeController> {
                                           depth: NeumorphicTheme.embossDepth(context),
                                           boxShape:  NeumorphicBoxShape.roundRect(BorderRadius.circular(10)),
                                         ),
-                                        child: Text(Duration(milliseconds: controller.notesList[index].time!).toString().substring(2,6),style: Get.textTheme.subtitle2!.copyWith(color: color),)),
+                                        child: Text(Duration(milliseconds: controller.notesList[index].time!).toString().substring(2,7),style: Get.textTheme.subtitle2!.copyWith(color: color),)),
 
                                     Gap(5.w),
                                     Expanded(
@@ -124,7 +125,10 @@ class HomeView extends GetView<HomeController> {
                                   }
                                 });
                               },
-                              style: NeumorphicStyle(boxShape: NeumorphicBoxShape.circle() ),
+                              style: NeumorphicStyle(
+                                  boxShape: NeumorphicBoxShape.circle(),
+
+                              ),
                               child: Icon(Icons.close,color: Get.theme.errorColor,size: 15,),
 
                             ),
