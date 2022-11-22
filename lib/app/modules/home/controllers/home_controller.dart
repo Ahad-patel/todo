@@ -16,6 +16,7 @@ class HomeController extends GetxController {
 
  Future deleteNote(int id) {
    return DBProvider.db.removeNote(id);
+
   }
 
 
